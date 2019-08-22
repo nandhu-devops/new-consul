@@ -1,0 +1,19 @@
+consul1 ansible_ssh_host=ansible@172.31.44.192 ansible_ssh_user=ansible ansible_ssh_pass=1
+
+
+consul2 ansible_ssh_host=ansible@172.31.18.93 ansible_ssh_user=ansible ansible_ssh_pass=1
+
+consul3 ansible_ssh_host=ansible@172.31.17.153 ansible_ssh_user=ansible ansible_ssh_pass=1
+
+
+[bootstrap:children]
+consul1
+
+[server:children]
+consul2
+consul3
+
+[all:children]
+bootstrap
+server
+

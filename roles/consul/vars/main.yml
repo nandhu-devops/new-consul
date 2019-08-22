@@ -1,0 +1,3 @@
+---
+consul_key: "{{'consul_key.stdout'}}"
+config_file: "{{'/home/ubuntu/etc/ansible/roles/consul/templates/config.json'}}"

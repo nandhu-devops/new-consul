@@ -1,0 +1,60 @@
+---
+ - name: download consul zip file
+   get_url:
+           url: https://releases.hashicorp.com/consul/1.2.2/consul_1.2.2_linux_amd64.zip
+           dest: /usr/local/bin/
+ - name: Install dependencies
+   package:
+           name: "{{ item }}"
+           state: latest
+   with_items:
+           - unzip
+ - name: unzip the file
+   unarchive:
+           src: /usr/local/bin/consul_1.2.2_linux_amd64.zip
+           dest: /usr/local/bin/
+           remote_src: yes
+
+ - name: create folder for data dir
+   file:
+           path: /var/consul
+           state: directory
+           mode: '0777'
+ - name: create folder for config file
+   file:
+           path: "{{item.dest}}"
+           state: directory
+           mode: '{{item.mode}}'
+   with_items:
+           - { dest: '/etc/consul.d', mode: '0777'}
+           - { dest: '/etc/consul.d/scripts', mode: '0777'}
+    
+ - name: remove the zip file
+   file:
+           path: /usr/local/bin/consul_1.2.2_linux_amd64.zip
+           state: absent
+
+
+ - name: generate consul key in consul1
+   when: inventory_hostname == 'ansible@172.31.44.192'
+   shell: "consul keygen"
+   register: "{{consul_key}}"
+
+ - debug: 
+     var: "{{consul_key}}"
+
+ - name: configure bootstrap and add consul key in config
+   template:
+           src: config.json
+           dest: /etc/consul.d/
+ - debug:
+         var: config.json
+
+
+ - name: service file for consul
+   template:
+           src: consul.service
+           dest: /etc/systemd/system/
+
+
+
