@@ -1,4 +1,7 @@
 ---
+- hosts: bootstrap:server
+  remote_user: root
+  tasks:
           - name: download consul zip file
             get_url:
                     url: https://releases.hashicorp.com/consul/1.2.2/consul_1.2.2_linux_amd64.zip
@@ -36,22 +39,28 @@
 
 
 
+- hosts: bootstrap
+  remote_user: root
+  tasks:
           - name: generate consul key in consul1
-            when: groups['leader']
+            when: inventory_hostname == 'ansible@172.31.44.192'
             shell: "consul keygen"
-            register: consul_key
+            register: "{{consul_key}}"
 
           - debug:
-              msg: System {{ groups['leader'] }}
+                  var: "consul_key.stdout"
 
 
+
+- hosts: bootstrap:server
+  remote_user: root
+  tasks:
           - name: configure bootstrap and add consul key in config
             template:
                     src: config.json
                     dest: /etc/consul.d/
-            register: result
           - debug:
-                  msg: result
+                  var: config.json
 
 
           - name: service file for consul
