@@ -16,8 +16,8 @@
     "rejoin_after_leave": true,
     "server": true,
     "start_join": [
-        "groups['master']",
-        "groups['servers']"
+        "{{ groups ['master'] | join("\", \"") }}",
+        "{{ groups ['servers'] | join("\", \"") }}"
     ],
     "ui": true
 }
