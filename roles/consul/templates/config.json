@@ -10,15 +10,13 @@
         "only_passing": true
     },
     "enable_syslog": true,
-    "encrypt": "{{consul_key}}",
+    "encrypt": "{{hostvars['dummy']['dummy_var']}}",
     "leave_on_terminate": true,
     "log_level": "INFO",
     "rejoin_after_leave": true,
     "server": true,
-    "start_join": [
-        "{{ groups ['master'] | join("\", \"") }}",
-        "{{ groups ['servers'] | join("\", \"") }}"
-    ],
+    "start_join": [ {% for item in groups['war'] %} "{{ hostvars[item].ansible_default_ipv4.address }}" {% if not loop.last %} , {% endif %} {% endfor %} ]
+    ,
     "ui": true
 }
 

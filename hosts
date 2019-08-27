@@ -23,7 +23,7 @@
 
 # Ex 2: A collection of hosts belonging to the 'webservers' group
 
-[leader]
+[master]
 #[consul1]
 ansible@172.31.44.192
 ## alpha.example.org
@@ -38,7 +38,7 @@ ansible@172.31.44.192
 
 # Ex 3: A collection of database servers in the 'dbservers' group
 
-[slave]
+[servers]
 #consul2
 #consul3
 ansible@172.31.18.93

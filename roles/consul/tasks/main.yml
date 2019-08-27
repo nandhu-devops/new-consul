@@ -38,7 +38,7 @@
           - debug:
                  msg: "{{ inventory_hostname }}"
           - debug:
-                  msg: "{{ groups['master'] }}"
+                  msg: "{{ groups['war'] }}"
 
           - name: generate consul key in consul1
             when: inventory_hostname == 'consul1'
@@ -46,20 +46,19 @@
             register: consul_key
           - debug:
                   msg: " {{ consul_key }}"
-                  #loop: "{{ consul_key.results }}"
-
+          - name: create a dummy host
+            add_host:
+                    name: "dummy"
+                    dummy_var: "{{ consul_key.stdout }}"
+          #- debug:
+          #        msg: "{{ dummy_var }}"
           - name: configure bootstrap and add consul key in config
-            #when: inventory_hostname == 'consul3'
-            # shell: "consul keygen"
-            #          register: consul_key
             template:
                     src: config.json
                     dest: /etc/consul.d/
           - debug:
                   msg: "{{ inventory_hostname }}"
          
-          - name: copy file from host 1 to host 2&3
-            shell: "scp -o StrictHostKeyChecking=no  ansible@172.31.44.192/etc/consul.d/config.json ansible@172.31.18.93:/etc/consul.d/"
 
           - name: service file for consul
             template:
